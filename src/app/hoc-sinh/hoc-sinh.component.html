@@ -1,0 +1,161 @@
+<nav class="navbar navbar-light bg-primary">
+    <div class="container-fluid">
+        <a href="/"><h1 style="color:aliceblue;">Student-Class</h1></a>
+        <div class="d-flex">
+            <button type="button" (click)= "addItem()" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Add Student
+            </button>
+
+        </div>
+    </div>
+</nav>
+<nav class="nav-bar mt-2" >
+  <input class="form-control"  type="text" name="lastName" [(ngModel)] = "lastName" (ngModelChange)= "Search()"
+    placeholder="Enter Last Name to search" >
+</nav>
+<table class="table mt-3">
+    <thead>
+        <th scope="col">Student</th>
+        <th scope="col" (click)= "sortName('firstName')">First Name</th>
+        <th scope="col" (click)= "sortName('lastName')">Last Name </th>
+        <th scope="col">Email</th>
+        <th scope="col">Mobile No.</th>
+        <th scope="col">Address</th>
+        <th scope="col">Action</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of studentData;  index as i ">
+            <td>{{(current_page*limit)-limit + i + 1}}</td>
+            <td>{{row.firstName}}</td>
+            <td>{{row.lastName}}</td>
+            <td>{{row.email}}</td>
+            <td>{{row.mobile}}</td>
+            <td>{{row.address}}</td>
+            <td>
+                <button class="btn btn-warning" (click)=" onRow(row)" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">Edit</button>
+                <button class="btn btn-danger mx-3" (click)=" deleteStudent(row)">Delete</button>
+            </td>
+
+        </tr>
+    </tbody>
+    <!-- <pagination-controls  (pageChange)="p = $event"> </pagination-controls> -->
+</table>
+<div class="text-center" *ngIf="pageList.length > 1">
+  <button class="btn btn-info mx-1"  *ngFor=" let page of pageList" [ngClass]="page == current_page ? 'btn-dark' : ''" (click)="getAllStudent(page)">{{page}}</button>
+</div> 
+<!-- Button trigger modal -->
+  <!-- Modal create -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">New Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formValue"  (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Frist Name</label>
+                  <input type="text" class="form-control" formControlName="firstName" required id="exampleInputEmail1" aria-describedby="emailHelp"
+                  [ngClass]="{ 'is-invalid': submitted && f.firstName.errors}"
+                  >
+                  <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                    <div *ngIf="f.firstName.errors.required">FirstName is required</div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" formControlName="lastName" id="exampleInputPassword1"
+                  [ngClass]="{ 'is-invalid': submitted && f.lastName.errors}"
+                  >
+                  <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                    <div *ngIf="f.lastName.errors.required">LastName is required</div>
+                  </div>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword12" class="form-label">Email</label>
+                    <input type="email" class="form-control" formControlName="email" id="exampleInputPassword12">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleInputPassword13" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" formControlName="mobile" id="exampleInputPassword13"
+                    [ngClass]="{ 'is-invalid': submitted && f.mobile.errors}"
+                    >
+                    <div *ngIf="submitted && f.mobile.errors" class="invalid-feedback">
+                      <div *ngIf="f.mobile.errors.required">Mobile is required</div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleInputPassword14" class="form-label">Address</label>
+                    <input type="text" class="form-control" formControlName="address" id="exampleInputPassword14">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Thuộc lớp nào</label>
+                    <select formControlName="LopHoc_id" class="form-control">
+                      <option [ngValue]="null" disabled>--Trống--</option>
+                      <option *ngFor="let lop of lopHocArr" [ngValue]="lop.id">
+                       {{ lop.tenlop }}
+                      </option>
+                    </select> 
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" id="cancel" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" (click)="formValue.valid ? postStudent() : '' " class="btn btn-primary">Add</button>
+                  </div>
+              </form>
+             
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+<!-- form update -->
+  <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel1">Update Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formValue">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Frist Name</label>
+                  <input type="text" class="form-control" formControlName="firstName" id="exampleInputEmail1" aria-describedby="emailHelp">
+                
+                </div>
+                <div class="mb-3">
+                  <label for="exampleInputPassword1" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" formControlName="lastName" id="exampleInputPassword1">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword12" class="form-label">Email</label>
+                    <input type="email" class="form-control" formControlName="email" id="exampleInputPassword12">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleInputPassword13" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" formControlName="mobile" id="exampleInputPassword13">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleInputPassword14" class="form-label">Address</label>
+                    <input type="text" class="form-control" formControlName="address" id="exampleInputPassword14">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Thuộc lớp nào</label>
+                    <select formControlName="LopHoc_id" class="form-control">
+                      <option [ngValue]="null" disabled>--Trống--</option>
+                      <option *ngFor="let lop of lopHocArr" [ngValue]="lop.id">
+                       {{ lop.tenlop }}
+                      </option>
+                    </select> 
+                  </div>
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="cancel1" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)= "updateStudent()"  class="btn btn-primary">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>

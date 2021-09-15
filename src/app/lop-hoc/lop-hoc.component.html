@@ -1,0 +1,124 @@
+<nav class="navbar navbar-light bg-primary">
+    <div class="container-fluid">
+      <a href="/"><h1 style="color:aliceblue;">Student-Class</h1></a>
+        <div class="d-flex">
+            <button type="button" (click)= "addItem()" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Add Class
+            </button>
+            
+            
+        </div>
+    </div>
+</nav>
+<table class="table mt-3">
+    <thead>
+        <th scope="col">Class ID</th>
+        <th scope="col">Class Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Action</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of classData">
+            <td>{{row.id}}</td>
+            <td>{{row.tenlop}}</td>
+            <td>{{row.descrip}}</td>
+            <td>
+                <button class="btn btn-warning" (click)=" onRow(row)" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">Edit</button>
+                <button class="btn btn-danger mx-3" (click)=" deleteClass(row)">Delete</button>
+            </td>
+
+        </tr>
+    </tbody>
+</table>
+<!-- Button trigger modal -->
+  <!-- Modal create -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">New Class</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formValue"  (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Class Name</label>
+                  <input type="text" class="form-control" formControlName="tenlop" required id="exampleInputEmail1" aria-describedby="emailHelp"
+                  [ngClass]="{ 'is-invalid': submitted && f.tenlop.errors}"
+                  >
+                  <div *ngIf="submitted && f.tenlop.errors" class="invalid-feedback">
+                    <div *ngIf="f.tenlop.errors.required">Class Name is required</div>
+                  </div>
+                </div>
+            
+                <div class="mb-3">
+                    <label for="exampleInputPassword12" class="form-label">Description</label>
+                    <input type="email" class="form-control" formControlName="descrip" id="exampleInputPassword12">
+                  </div>
+                
+                  <!-- <div class="mb-3">
+                    <label for="exampleInputPassword14" class="form-label">Salary</label>
+                    <input type="text" class="form-control" formControlName="salary" id="exampleInputPassword14">
+                  </div>
+     -->
+                  <div class="modal-footer">
+                    <button type="button" id="cancel" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" (click)="formValue.valid ? postClass() : '' " class="btn btn-primary">Add</button>
+                  </div>
+              </form>
+             
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+<!-- form update -->
+  <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel1">Update Student</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formValue">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Class Name</label>
+                  <input type="text" class="form-control" formControlName="tenlop" id="exampleInputEmail1" aria-describedby="emailHelp">
+                
+                </div>
+                <!-- <div class="mb-3"> -->
+                  <!-- <label for="exampleInputPassword1" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" formControlName="lastName" id="exampleInputPassword1">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword12" class="form-label">Email</label>
+                    <input type="email" class="form-control" formControlName="email" id="exampleInputPassword12">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleInputPassword13" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" formControlName="mobile" id="exampleInputPassword13">
+                  </div> -->
+                  <div class="mb-3">
+                    <label for="exampleInputPassword14" class="form-label">Description</label>
+                    <input type="text" class="form-control" formControlName="descrip" id="exampleInputPassword14">
+                  </div>
+                  <!-- <div class="mb-3">
+                    <label class="form-label">Thuộc lớp nào</label>
+                    <select formControlName="LopHoc_id" class="form-control">
+                      <option [ngValue]="null" disabled>--Trống--</option>
+                      <option *ngFor="let lop of lopHocArr" [ngValue]="lop.id">
+                       {{ lop.tenlop }}
+                      </option>
+                    </select> 
+                  </div> -->
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="cancel1" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" (click)= "updateClass()"  class="btn btn-primary">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
